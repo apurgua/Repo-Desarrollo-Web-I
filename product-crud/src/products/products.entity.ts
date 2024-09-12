@@ -4,7 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm'
 export class ProductsEntity {
 
     @PrimaryGeneratedColumn('uuid')
-    ID_PROD: number;
+    ID_PROD: string;
     
     @Column({ unique: true })  // Aquí hacemos que el nombre del producto sea único
     NAME_PROD: string;

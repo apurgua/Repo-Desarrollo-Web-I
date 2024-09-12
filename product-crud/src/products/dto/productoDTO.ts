@@ -1,3 +1,4 @@
+
 import { IsInt, IsNotEmpty, IsNumber, IsPositive, IsString, MaxLength, Min, MinLength, minLength } from "class-validator";
 
 export class CreateProductDTO {
@@ -18,3 +19,4 @@ export class CreateProductDTO {
     @Min(0)
     STOCK: number;
 }
+

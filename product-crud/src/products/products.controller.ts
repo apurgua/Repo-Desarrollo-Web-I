@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Delete, Patch, Param, ParseIntPipe} from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Patch, Param, ParseIntPipe } from '@nestjs/common';
 import { CreateProductDTO } from './dto/productoDTO';
 import { ProductsService } from './products.service';
 import { UpdateProductDTO } from './dto/updateProductDTO';
@@ -9,28 +9,30 @@ export class ProductsController {
     constructor(private productService: ProductsService) { }
 
     @Get()
-    getProducts(){
+    getProducts() {
         return this.productService.getProducts()
-    } 
-
-    @Get(':id')
-    getProductById(@Param('id', ParseIntPipe) id: number ){
-        return this.productService.getProductById(id)
-    } 
-
-    // Crear un nuevo producto (validar los datos de entrada).
-    @Post()
-    createProduct(@Body() newProduct: CreateProductDTO[]) {
-        return this.productService.createProduct(newProduct)
     }
 
+    @Get(':id')
+    getProductById(@Param('id') id: string) {
+        return this.productService.getProductById(id)
+    }
+
+    @Post()
+    async createProduct(@Body() products: CreateProductDTO | CreateProductDTO[]) {
+        // Si solo se envía un producto, lo convertimos en un array de un solo elemento
+        const productsArray = Array.isArray(products) ? products : [products];
+        return this.productService.createProduct(productsArray);
+    }
+
+
     @Delete(':id')
-    deleteProduct(@Param('id', ParseIntPipe) id: number){
+    deleteProduct(@Param('id') id: string) {
         return this.productService.deleteProduct(id)
     }
 
     @Patch(':id')
-    updateProduct(@Param('id' , ParseIntPipe) id: number, @Body() product: UpdateProductDTO){
+    updateProduct(@Param('id') id: string, @Body() product: UpdateProductDTO) {
         return this.productService.updateProduct(id, product)
     }
 

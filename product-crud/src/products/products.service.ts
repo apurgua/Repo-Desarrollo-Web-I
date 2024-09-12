@@ -18,29 +18,26 @@ export class ProductsService {
 
   async createProduct(products: CreateProductDTO[]) {
     const newProducts = [];
+
     for (const prod of products) {
       const productFound = await this.productsRepository.findOne({
-        where: { NAME_PROD: prod.NAME_PROD, },
+        where: { NAME_PROD: prod.NAME_PROD },
       });
-
-      // Si el producto ya existe, para a revisar el siguiente producto.
       if (productFound) {
-        continue;
+        continue; // Continúa al siguiente producto en el array
       }
-
-      // Si no existe, entonces si lo crea
       const newProduct = this.productsRepository.create(prod);
       newProducts.push(newProduct);
     }
 
-    // Guarda todos los productos nuevos que no existían en la base de datos
-    // Primero verifica que el array tenga productos para guardar, por eso se evalua su longitud (array)
+    // Guardamos los nuevos productos si hay al menos uno
     if (newProducts.length > 0) {
       return this.productsRepository.save(newProducts);
     } else {
-      return new HttpException('Todos los productos ya existen', HttpStatus.CONFLICT);
+      return new HttpException('No new products to save', HttpStatus.CONFLICT);
     }
   }
+
 
 
 
@@ -52,7 +49,7 @@ export class ProductsService {
     return this.productsRepository.find()
   }
 
-  async getProductById(id: number) {
+  async getProductById(id: string) {
 
     const productFound = await this.productsRepository.findOne({
       where: {
@@ -69,7 +66,7 @@ export class ProductsService {
   }
 
 
-  async deleteProduct(id: number) {
+  async deleteProduct(id: string) {
     // La primera forma de hacerlo es la que se hizo en createProduct o en getProductById
     // Cuando se elimina un objeto, la sentencia devuelve un affected = 1, en caso de eliminacion y 0 en caso de na ha eliminado nada
     const result = await this.productsRepository.delete(id);
@@ -80,7 +77,7 @@ export class ProductsService {
     }
   }
 
-  async updateProduct(id: number, product: UpdateProductDTO) {
+  async updateProduct(id: string, product: UpdateProductDTO) {
     const productFound = await this.productsRepository.findOne({
       where: { ID_PROD: id }
     })
